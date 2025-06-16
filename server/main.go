@@ -2,7 +2,6 @@ package main
 
 import (
 	"RPC/shared"
-	"log"
 	"net"
 	"net/rpc"
 )
@@ -10,19 +9,23 @@ import (
 func main() {
 	mathService := new(shared.MathService)
 
-	rpc.Register(mathService)
+	// Регистрируем сервис
+	err := rpc.RegisterName("MathService", mathService)
+	if err != nil {
+		panic(err)
+	}
 
 	listener, err := net.Listen("tcp", ":1234")
 	if err != nil {
-		log.Fatal("Listen error:", err)
+		panic(err)
 	}
+	defer listener.Close()
 
-	log.Println("RPC server started on port 1234")
+	println("Server is running on port 1234...")
 
 	for {
 		conn, err := listener.Accept()
 		if err != nil {
-			log.Println("Accept error:", err)
 			continue
 		}
 		go rpc.ServeConn(conn)

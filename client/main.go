@@ -14,14 +14,20 @@ func main() {
 	}
 	defer client.Close()
 
-	args := &shared.MultiplyArgs{X: 6, Y: 7}
-	var reply shared.MultiplyReply
+	var x, y int
+	fmt.Print("Enter first number: ")
+	fmt.Scan(&x)
+	fmt.Print("Enter second number: ")
+	fmt.Scan(&y)
 
-	err = client.Call("MathService.Multiply", args, &reply)
+	args := &shared.MultiplyArgs{X: x, Y: y}
+	reply := &shared.MultiplyReply{}
+
+	err = client.Call("MathService.Multiply", args, reply)
 	if err != nil {
 		fmt.Println("RPC call error:", err)
 		return
 	}
 
-	fmt.Printf("RPC Result: %d * %d = %d\n", args.X, args.Y, reply.Result)
+	fmt.Printf("Result: %d * %d = %d\n", args.X, args.Y, reply.Result)
 }
